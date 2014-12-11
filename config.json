@@ -1,0 +1,6 @@
+{ 
+  "listenPort": ":59999",
+  "repositories": [
+    "http://bitbucket.org/tommyvyo/arthouse"
+    ]
+}
