@@ -1,29 +1,24 @@
-# README #
+# thomas' mini build server #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This project is written in Go lang. It sits somewhere between being a continuous integration / build server. 
 
-### What is this repository for? ###
+### What is this? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+This is a super simple CI server. It listens for POST hooks from bitbucket/github.
+When a POST comes in the build process is started. The build process uses a Dockerfile
+to build a container image capable of running a test suite against your project. 
 
-### How do I get set up? ###
+Build process workflow:
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+1. Checkout the latest commit
+2. Build docker image which can run your tests
+3. Run test suite in a new container based off the new image
+4. Save the test results (pass/fail & ouput)
+5. Clean up (remove docker image used to run your test)
 
-### Contribution guidelines ###
+### Why is this? ### 
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+I started this project because I wanted a continuous integration server to run the test suite of a Rails
+application after each commit. I played around with setting up Jenkins and Hudson and found that both had 
+more features than I knew what to do with. I love Docker and wanted to learn more about the API and 
+writing software in Go, so I figured this would be a good start. 
