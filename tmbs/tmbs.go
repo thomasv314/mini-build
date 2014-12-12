@@ -4,11 +4,11 @@ import (
 	"fmt"
 )
 
-func StartBuildServer() {
+func Start() {
 
 	configuration := LoadConfiguration()
 
-	StartPushListener(configuration)
+	StartHttpListener(configuration)
 	StartBuildMaster(configuration)
 
 	for {

@@ -4,19 +4,27 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 )
 
-func StartPushListener(config Configuration) {
+// Starts an HTTP server that listens on a specified port and
+// launches new builds when post requests come in to /post/
+func StartHttpListener(config Configuration) {
 	go startListener(config.ListenPort)
 }
 
 func startListener(listenPort string) {
-	fmt.Println("Started listening for push notifications on port ", listenPort)
+	fmt.Println("Listening on", listenPort)
 	http.HandleFunc("/push", recievedPushNotification)
-	http.ListenAndServe(listenPort, nil)
+	err := http.ListenAndServe(listenPort, nil)
+	if err != nil {
+		fmt.Println("Error. Could not start the HTTP listener.")
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
-func recievedPushNotification(res http.ResponseWriter, req *http.Request) {
+func setHeader(res http.ResponseWriter) {
 
 	res.Header().Set(
 		"Content-Type",
@@ -27,6 +35,12 @@ func recievedPushNotification(res http.ResponseWriter, req *http.Request) {
 		"Access-Control-Allow-Origin",
 		"*",
 	)
+
+}
+
+func recievedPushNotification(res http.ResponseWriter, req *http.Request) {
+
+	setHeader(res)
 
 	req.ParseForm()
 	fmt.Println("Form:", req.Form)

@@ -6,43 +6,36 @@ import (
 	"os"
 )
 
-// Main method for TMBS
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
-		tmbs.StartBuildServer()
+		displayHelp()
 	} else {
-		if args[0] == "setup" {
-			tmbs.Setup()
-		} else {
-			fmt.Println("What? That's not a command")
+		switch args[0] {
+		case "start":
+			{
+				tmbs.Start()
+			}
+		case "setup":
+			{
+				tmbs.Setup()
+			}
+		case "add":
+			{
+				tmbs.AddRepository(args)
+			}
+		default:
+			{
+				displayHelp()
+			}
 		}
 	}
 }
 
-/*
-package tmbs
-
-import (
-	"fmt"
-)
-
-type BuildAgent struct {
-	RepoUrl  string
-	RepoType string
+func displayHelp() {
+	fmt.Println("  Commands:")
+	fmt.Println("\t start   - Starts the build server")
+	fmt.Println("\t setup   - Initializes the tmbs directory")
+	fmt.Println("\t add     - Add a repository")
+	fmt.Println("\t help    - Display this message")
 }
-
-type BuildAgent interface {
-	CloneRepository(url string, path string) bool
-}
-
-func CloneRepository(url string, path string) bool {
-	fmt.Println("Trying to clone repository from", url)
-	gitCloneOpts := git.CloneOptions{CheckoutBranch: "master"}
-	repo, err := git.Clone(url, path, &gitCloneOpts)
-	if err != nil {
-		fmt.Println("Error")
-		panic(err)
-	}
-	fmt.Println("Repository:", repo)
-*/
