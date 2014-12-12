@@ -57,7 +57,7 @@ You're all set. Start mini-build and it'll listen for commit POST's from that pr
 ```
 #!bash
 ➜ mini-build start
-Thomas' Mini Build Server - hit return to quit
+Thomas Mini Build Server - hit return to quit
  - loaded config.json
  - listening on 0.0.0.0 :59999
 ```
