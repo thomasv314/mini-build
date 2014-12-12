@@ -6,12 +6,12 @@ import (
 	"net/http"
 )
 
-func StartPushListener(listenPort string) {
-	go startListener(listenPort)
+func StartPushListener(config Configuration) {
+	go startListener(config.ListenPort)
 }
 
 func startListener(listenPort string) {
-	fmt.Println("Now listening for push notifications on port ", listenPort)
+	fmt.Println("Started listening for push notifications on port ", listenPort)
 	http.HandleFunc("/push", recievedPushNotification)
 	http.ListenAndServe(listenPort, nil)
 }
@@ -28,10 +28,13 @@ func recievedPushNotification(res http.ResponseWriter, req *http.Request) {
 		"*",
 	)
 
-	fmt.Println("Bitbucket push posted. Form:")
-
 	req.ParseForm()
 	fmt.Println("Form:", req.Form)
+
+	repo := "http://bitbucket.org/tommyvyo/arthouse.git"
+	commit := "aeb8430c"
+
+	link <- BuildCommand{"bitbucket", commit, repo}
 
 	io.WriteString(
 		res,
