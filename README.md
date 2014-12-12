@@ -17,7 +17,7 @@ Build process workflow:
 5. Clean up (remove docker image used to run your test)
 
 
-### Why? ###  
+### Why? ###
 
 I started this project because I wanted a continuous integration server to run the test suite of a Rails
 application after each commit. I played around with setting up Jenkins and Hudson and found that both had 
