@@ -22,7 +22,7 @@ func main() {
 			}
 		case "add":
 			{
-				tmbs.AddRepository(args)
+				tmbs.AddRepository(args[1:])
 			}
 		default:
 			{

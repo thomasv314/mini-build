@@ -25,7 +25,7 @@ func LoadConfiguration() Configuration {
 	if err != nil {
 		fmt.Println("There was an error loading your configuration file.", "Error:", err)
 	}
-	fmt.Println("Loaded", filename)
+	fmt.Println(" - loaded", filename)
 
 	return configuration
 }

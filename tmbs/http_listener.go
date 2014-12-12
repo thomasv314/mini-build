@@ -14,7 +14,7 @@ func StartHttpListener(config Configuration) {
 }
 
 func startListener(listenPort string) {
-	fmt.Println("Listening on", listenPort)
+	fmt.Println(" - listening on 0.0.0.0", listenPort)
 	http.HandleFunc("/push", recievedPushNotification)
 	err := http.ListenAndServe(listenPort, nil)
 	if err != nil {
