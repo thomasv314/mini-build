@@ -8,8 +8,8 @@ import (
 
 // Simple JSON configuration struct
 type Configuration struct {
-	ListenPort   string   // json: "listenPort"
-	Repositories []string // json: "repos"
+	ListenPort   string   // json: "listenPort"		: ":55559"
+	Repositories []string // json: "repos"				: ["http://github.com/app/app.git"]
 }
 
 // Loads a configuration file from config.json in the directory
@@ -25,7 +25,7 @@ func LoadConfiguration() Configuration {
 	if err != nil {
 		fmt.Println("There was an error loading your configuration file.", "Error:", err)
 	}
-	fmt.Println(" - loaded", filename)
+	//fmt.Println(" - loaded", filename)
 
 	return configuration
 }

@@ -6,7 +6,12 @@ import (
 	"os"
 )
 
+var configuration tmbs.Configuration
+
 func main() {
+
+	configuration = tmbs.LoadConfiguration()
+
 	args := os.Args[1:]
 	if len(args) == 0 {
 		displayHelp()
@@ -14,15 +19,23 @@ func main() {
 		switch args[0] {
 		case "start":
 			{
+				// tmbs.go
 				tmbs.Start()
 			}
 		case "setup":
 			{
+				// setup.go
 				tmbs.Setup()
 			}
 		case "add":
 			{
-				tmbs.AddRepository(args[1:])
+				// manager.go
+				// TODO add error catching if args > 1 || 0
+				if len(args) != 3 {
+					fmt.Println("Usage: mini-build add <repo-name> <repo-url>")
+				} else {
+					tmbs.AddRepository(args[1], args[2])
+				}
 			}
 		default:
 			{

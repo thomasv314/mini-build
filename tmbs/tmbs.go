@@ -4,9 +4,11 @@ import (
 	"fmt"
 )
 
+var configuration Configuration
+
 func Start() {
 
-	configuration := LoadConfiguration()
+	configuration = LoadConfiguration()
 
 	StartHttpListener(configuration)
 	StartBuildMaster(configuration)
