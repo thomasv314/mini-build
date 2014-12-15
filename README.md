@@ -59,8 +59,3 @@ application after each commit. I played around with setting up Jenkins and Hudso
 more features than I knew what to do with. I love Docker and wanted to learn more about the API and 
 writing software in Go, so I figured this would be a good start. 
 
-
-
-=======
-```
->>>>>>> 934a1276b6c909eb62c62cc43ed8f3575193b25f
