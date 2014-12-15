@@ -51,9 +51,7 @@ You're all set. Start mini-build and it'll listen for commit POST's from that pr
 Thomas Mini Build Server - hit return to quit
  - loaded config.json
  - listening on 0.0.0.0 :59999
-<<<<<<< HEAD
-`
-
+```
 ### Why? ###
 
 I started this project because I wanted a continuous integration server to run the test suite of a Rails
