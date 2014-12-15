@@ -22,26 +22,36 @@ Add the mini-build binary to your PATH.
 
 Run the `setup` command to create the directory structure in your user's home directory:
 
-`➜ mini-build setup
+```
+#!bash
+➜ mini-build setup
 Setting up /home/thomas
 Created directory: /home/thomas/.tmbs
 Created directory: /home/thomas/.tmbs/repos
 Created directory: /home/thomas/.tmbs/tests
 Good to go!
-`
+```
 
 Add a github/bitbucket repository to the mini-build config:
 
-`➜ mini-build add https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git
+```
+#!bash
+➜ mini-build add https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git
 Added https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git to the mini-build configuration.
-`
+```
+
+
+
 
 You're all set. Start mini-build and it'll listen for commit POST's from that project:
 
-`➜ mini-build start
-Thomas' Mini Build Server - hit return to quit
+```
+#!bash
+➜ mini-build start
+Thomas Mini Build Server - hit return to quit
  - loaded config.json
  - listening on 0.0.0.0 :59999
+<<<<<<< HEAD
 `
 
 ### Why? ###
@@ -53,3 +63,6 @@ writing software in Go, so I figured this would be a good start.
 
 
 
+=======
+```
+>>>>>>> 934a1276b6c909eb62c62cc43ed8f3575193b25f

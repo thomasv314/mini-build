@@ -37,6 +37,14 @@ func main() {
 					tmbs.AddRepository(args[1], args[2])
 				}
 			}
+		case "test":
+			{
+
+				tmbs.Setup()
+				url := "https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
+				tmbs.AddRepository("ahous", url)
+
+			}
 		default:
 			{
 				displayHelp()

@@ -1,16 +1,18 @@
 package tmbs
 
 import (
+	"fmt"
 	git "github.com/libgit2/git2go"
+	"net/url"
 )
 
-func CloneRepository(gitUrl string, path string) (*git.Repository, error) {
-	co := git.CloneOptions{}
-	repo, err := git.Clone(gitUrl, path, &co)
+func CloneRepository(gitURL *url.URL, path string) (*git.Repository, error) {
+	fmt.Println("Cloning")
+	repo, err := git.Clone(gitURL.String(), path, cloneOptionsForURL(gitURL))
 	return repo, err
 }
 
-func FetchLatestRepository(repository *git.Repository) error {
+func FetchRepository(repository *git.Repository) error {
 	// list the remotes in the repository (origin by default)
 	// TODO think about when this wont be origin and what to do
 	remotes, err := repository.ListRemotes()
@@ -19,6 +21,7 @@ func FetchLatestRepository(repository *git.Repository) error {
 	} else {
 		// lookup the first remote returned from the repo (origin)
 		origin, err := repository.LookupRemote(remotes[0])
+		origin.SetCallbacks(&remoteCallbacks)
 		if err != nil {
 			return err // error looking up remote
 		} else {
