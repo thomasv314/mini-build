@@ -2,6 +2,8 @@ package tmbs
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"os"
 )
 
@@ -27,6 +29,7 @@ func LoadConfiguration() (Configuration, error) {
 	AppConfig := Configuration{}
 
 	dir := GetTmbsDirectory() + config_file
+
 	file, err := os.Open(dir)
 	defer file.Close()
 
@@ -37,8 +40,21 @@ func LoadConfiguration() (Configuration, error) {
 }
 
 func SaveConfiguration(config *Configuration) {
-	file, _ := os.Open(config_file)
-	encoder := json.NewEncoder(file)
-	err := encoder.Encode(&config)
-	exitIfError(err, "Could not save configuration file.")
+
+	cfgdir := GetTmbsDirectory() + config_file
+
+	fmt.Println("Save config called.", cfgdir)
+
+	jsonbytes, err := json.MarshalIndent(config, " ", "  ")
+
+	if err != nil {
+		fmt.Println("Umm, could not marshal config.")
+	} else {
+		err = ioutil.WriteFile(cfgdir, jsonbytes, 0644)
+		if err != nil {
+			fmt.Println("Error writing the fockinnngg file")
+		}
+		exitIfError(err, "Could not save configuration file.")
+
+	}
 }

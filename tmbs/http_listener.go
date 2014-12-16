@@ -1,8 +1,9 @@
 package tmbs
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -45,25 +46,41 @@ func recievedPushNotification(res http.ResponseWriter, req *http.Request) {
 
 	setHeader(res)
 
-	req.ParseForm()
-	fmt.Println("Form:", req.Form)
+	var js interface{}
 
-	repo := "http://bitbucket.org/tommyvyo/arthouse.git"
-	commit := "aeb8430c"
+	decoder := json.NewDecoder(req.Body)
+	err := decoder.Decode(js)
 
-	link <- BuildCommand{"bitbucket", commit, repo}
+	if err != nil {
+		fmt.Println("ERROR", err)
+	} else {
+		jsbytes, err := json.MarshalIndent(js, " ", "  ")
+		exitIfError(err, "Could not indent received request.")
 
-	io.WriteString(
-		res,
-		`<doctype html>
-		<html>
-		<head>
-		<title>Hello World</title>
-		</head>
-		<body>
-		Hello World!
-		</body>
-		</html>`,
-	)
+		err = ioutil.WriteFile(GetTmbsDirectory()+"/myreq.json", jsbytes, 0644)
+		exitIfError(err, "Could not write the requ.")
+		fmt.Println("Recieved and wrote request")
+	}
 
+	//	req.ParseForm()
+	//	fmt.Println("Form:", req.Form)
+
+	//repo := "http://bitbucket.org/tommyvyo/arthouse.git"
+	//	commit := "aeb8430c"
+
+	//	link <- BuildCommand{"bitbucket", commit, repo}
+	/*
+		io.WriteString(
+			res,
+			`<doctype html>
+			<html>
+			<head>
+			<title>Hello World</title>
+			</head>
+			<body>
+			Hello World!
+			</body>
+			</html>`,
+		)
+	*/
 }

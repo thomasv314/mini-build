@@ -1,7 +1,6 @@
 package tmbs
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/user"
@@ -28,15 +27,12 @@ func Setup() {
 	// Create a blank configuration file
 	file, err := os.Create(appDir + "/config.json")
 	defer file.Close()
+
 	exitIfError(err, "Can't create empty config.json")
 
 	// Create a default configuration
 	emptyConfig := Configuration{ListenPort: ":59999", Repositories: make([]WatchedRepository, 0)}
-
-	// Encode the empty configuration and write it to the file
-	encoder := json.NewEncoder(file)
-	err = encoder.Encode(&emptyConfig)
-	exitIfError(err, "Failed to encode empty configuration file.")
+	SaveConfiguration(&emptyConfig)
 
 	fmt.Println("Created file:", appDir+"/config.json")
 	fmt.Println("TMBS setup correctly.")

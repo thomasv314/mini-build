@@ -29,6 +29,11 @@ func StartBuildLauncher() {
 func start() {
 	for {
 		build := <-link
-		fmt.Println("Recieved push", build.Commit, "from", build.Type)
+
+		LaunchNewBuild(build)
 	}
+}
+
+func LaunchNewBuild(build BuildCommand) {
+
 }

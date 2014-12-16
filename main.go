@@ -38,7 +38,7 @@ func main() {
 				}
 			case "add":
 				{
-					// manager.go
+					// add.go
 					// TODO add error catching if args > 1 || 0
 					if len(args) != 3 {
 						fmt.Println("Usage: mini-build add <repo-name> <repo-url>")
@@ -48,8 +48,6 @@ func main() {
 				}
 			case "test":
 				{
-					// rm -rf ~/.tmbs/ && go build && ./mini-build test
-					tmbs.Setup()
 					//url := "http://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
 					url := "https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
 					tmbs.AddRepository("ahous", url)

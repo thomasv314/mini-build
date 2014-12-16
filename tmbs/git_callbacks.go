@@ -42,7 +42,6 @@ func getUserPass() (un string, pw string) {
 }
 
 func buildCredentialsCallback(u *url.URL) git.CredentialsCallback {
-	fmt.Println("Returned the creds func")
 	return func(url, usernameFromURL string, allowedTypes git.CredType) (git.ErrorCode, *git.Cred) {
 		i, cred := git.NewCredDefault()
 
