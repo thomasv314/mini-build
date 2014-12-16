@@ -52,10 +52,3 @@ Thomas Mini Build Server - hit return to quit
  - loaded config.json
  - listening on 0.0.0.0 :59999
 ```
-### Why? ###
-
-I started this project because I wanted a continuous integration server to run the test suite of a Rails
-application after each commit. I played around with setting up Jenkins and Hudson and found that both had 
-more features than I knew what to do with. I love Docker and wanted to learn more about the API and 
-writing software in Go, so I figured this would be a good start. 
-
