@@ -4,14 +4,14 @@ import (
 	"fmt"
 )
 
-var configuration Configuration
+var config *Configuration
 
-func Start() {
+func Start(configuration *Configuration) {
 
-	configuration = LoadConfiguration()
+	config = configuration
 
-	StartHttpListener(configuration)
-	StartBuildMaster(configuration)
+	StartHttpListener()
+	StartBuildLauncher()
 
 	for {
 		// Run all goroutines til they press enter.

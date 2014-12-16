@@ -21,7 +21,7 @@ func FakePush() {
 	link <- BuildCommand{"bitbucket", commit, repo}
 }
 
-func StartBuildMaster(config Configuration) {
+func StartBuildLauncher() {
 	link = make(chan BuildCommand)
 	go start()
 }
@@ -31,8 +31,4 @@ func start() {
 		build := <-link
 		fmt.Println("Recieved push", build.Commit, "from", build.Type)
 	}
-}
-
-func startBuild(build *BuildCommand) {
-
 }

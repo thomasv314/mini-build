@@ -16,5 +16,4 @@ func exitIfError(err error, message ...string) {
 		fmt.Println("Error:", message)
 		os.Exit(1)
 	}
-
 }

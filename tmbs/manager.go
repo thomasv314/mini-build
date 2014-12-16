@@ -1,7 +1,6 @@
 package tmbs
 
 import (
-	"fmt"
 	"net/url"
 	"os"
 	"os/user"
@@ -18,8 +17,8 @@ func AddRepository(name string, gitUrl string) {
 	exitIfError(err, "Could not load current user.")
 	path := usr.HomeDir + "/.tmbs/repos/" + name
 
-	// Clone the repository
-	repository, err := CloneRepository(url, path)
+	// Clone a bare repository to /repos/
+	repository, err := CloneRepository(url, path, true)
 	exitIfError(err, "Could not clone repository.", url.String(), path)
 
 	// Fetch HEAD
@@ -27,7 +26,10 @@ func AddRepository(name string, gitUrl string) {
 	exitIfError(err, "Could not fetch repository.")
 
 	// If we make it this far, everything works.
-	fmt.Println("Fetched repository", name, gitUrl)
+	// Load the configuration, add the WatchedRepo, save configuration
+	newRepo := WatchedRepository{Directory: path, Name: name}
+	AppConfig.Repositories = append(AppConfig.Repositories, newRepo)
+	SaveConfiguration(&AppConfig)
 	os.Exit(0)
 }
 
@@ -41,7 +43,6 @@ func parseURL(str string) *url.URL {
 		parts := strings.Split(u.Host, ":")
 		u.Host = parts[0]
 		u.Path = path.Join(parts[1], u.Path)
-	} else {
 	}
 	return u
 }

@@ -4,24 +4,27 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 // Starts an HTTP server that listens on a specified port and
 // launches new builds when post requests come in to /post/
-func StartHttpListener(config Configuration) {
-	go startListener(config.ListenPort)
+func StartHttpListener() {
+	go startListener()
 }
 
-func startListener(listenPort string) {
-	fmt.Println(" - listening on 0.0.0.0", listenPort)
+func startListener() {
+
+	fmt.Println(
+		" - listening for commits to",
+		len(config.Repositories),
+		"repositories on", "0.0.0.0",
+		config.ListenPort,
+	)
+
 	http.HandleFunc("/push", recievedPushNotification)
-	err := http.ListenAndServe(listenPort, nil)
-	if err != nil {
-		fmt.Println("Error. Could not start the HTTP listener.")
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	err := http.ListenAndServe(config.ListenPort, nil)
+	exitIfError(err, "Could not start HTTP listener. Check to see it's not already running.")
+
 }
 
 func setHeader(res http.ResponseWriter) {

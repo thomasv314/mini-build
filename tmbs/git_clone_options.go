@@ -7,7 +7,7 @@ import (
 
 var remoteCallbacks git.RemoteCallbacks
 
-func cloneOptionsForURL(u *url.URL) *git.CloneOptions {
+func cloneOptionsForURL(u *url.URL, bare bool) *git.CloneOptions {
 	remoteCallbacks = git.RemoteCallbacks{
 		SidebandProgressCallback: sidebandProgressCallback,
 		TransferProgressCallback: transferProgressCallback,
@@ -16,7 +16,7 @@ func cloneOptionsForURL(u *url.URL) *git.CloneOptions {
 	}
 
 	return &git.CloneOptions{
-		Bare:            false,
+		Bare:            bare,
 		RemoteCallbacks: &remoteCallbacks,
 	}
 }

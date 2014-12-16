@@ -2,30 +2,43 @@ package tmbs
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
 // Simple JSON configuration struct
 type Configuration struct {
-	ListenPort   string   // json: "listenPort"		: ":55559"
-	Repositories []string // json: "repos"				: ["http://github.com/app/app.git"]
+	ListenPort   string ":59999" // json: "listenPort"		: ":55559"
+	Repositories []WatchedRepository
 }
 
+type WatchedRepository struct {
+	Directory string
+	Name      string
+}
+
+var (
+	config_file string = "/config.json"
+	AppConfig   Configuration
+)
+
 // Loads a configuration file from config.json in the directory
-func LoadConfiguration() Configuration {
-	fmt.Println("Thomas' Mini Build Server - hit return to quit")
+func LoadConfiguration() (Configuration, error) {
 
-	filename := "config.json"
-	file, _ := os.Open(filename)
+	AppConfig := Configuration{}
+
+	dir := GetTmbsDirectory() + config_file
+	file, err := os.Open(dir)
+	defer file.Close()
+
 	decoder := json.NewDecoder(file)
-	configuration := Configuration{}
-	err := decoder.Decode(&configuration)
+	err = decoder.Decode(&AppConfig)
 
-	if err != nil {
-		fmt.Println("There was an error loading your configuration file.", "Error:", err)
-	}
-	//fmt.Println(" - loaded", filename)
+	return AppConfig, err
+}
 
-	return configuration
+func SaveConfiguration(config *Configuration) {
+	file, _ := os.Open(config_file)
+	encoder := json.NewEncoder(file)
+	err := encoder.Encode(&config)
+	exitIfError(err, "Could not save configuration file.")
 }

@@ -6,9 +6,9 @@ import (
 	"net/url"
 )
 
-func CloneRepository(gitURL *url.URL, path string) (*git.Repository, error) {
+func CloneRepository(gitURL *url.URL, path string, bare bool) (*git.Repository, error) {
 	fmt.Println("Cloning")
-	repo, err := git.Clone(gitURL.String(), path, cloneOptionsForURL(gitURL))
+	repo, err := git.Clone(gitURL.String(), path, cloneOptionsForURL(gitURL, bare))
 	return repo, err
 }
 
