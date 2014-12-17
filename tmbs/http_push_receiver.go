@@ -19,13 +19,13 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		jsonStr, err := url.QueryUnescape(req.PostForm["payload"][0])
 		exitIfError(err, "Could not unescape")
 
-		var jsonInt interface{}
+		//		var jsonInt interface{}
 
-		json.Unmarshal([]byte(jsonStr), jsonInt)
+		//		json.Unmarshal([]byte(jsonStr), jsonInt)
 
-		jsonbytes, err := json.MarshalIndent(jsonInt, " ", " ")
-		exitIfError(err, "Could not indent")
-		ioutil.WriteFile("example.json", jsonbytes, 0644)
+		jsonbytes, err := json.MarshalIndent([]byte(jsonStr), " ", " ")
+		exitIfError(err, " Dang wtf Could not indent")
+		ioutil.WriteFile("bitbucket.json", jsonbytes, 0644)
 	}
 
 	fmt.Println(req.PostForm)
