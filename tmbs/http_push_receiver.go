@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
@@ -19,11 +20,13 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		jsonStr, err := url.QueryUnescape(req.PostForm["payload"][0])
 		exitIfError(err, "Could not unescape")
 
-		//		var jsonInt interface{}
+		fmt.Println("JSON STR\n", jsonStr)
 
-		//		json.Unmarshal([]byte(jsonStr), jsonInt)
+		var tempInterface interface{}
+		decoder := json.NewDecoder(strings.NewReader(jsonStr))
+		decoder.Decode(tempInterface)
 
-		jsonbytes, err := json.MarshalIndent([]byte(jsonStr), " ", " ")
+		jsonbytes, err := json.MarshalIndent(tempInterface, " ", " ")
 		exitIfError(err, " Dang wtf Could not indent")
 		ioutil.WriteFile("bitbucket.json", jsonbytes, 0644)
 	}
