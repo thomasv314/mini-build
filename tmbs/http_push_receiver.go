@@ -23,10 +23,14 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		fmt.Println("JSON STR\n", jsonStr)
 
 		var tempInterface interface{}
-		decoder := json.NewDecoder(strings.NewReader(jsonStr))
+		stringReader := strings.NewReader(jsonStr)
 
+		decoder := json.NewDecoder(stringReader)
 		err = decoder.Decode(tempInterface)
-		exitIfError(err, "CANT DECODE")
+
+		if err != nil {
+			fmt.Println("CANT DECODE WTF")
+		}
 
 		fmt.Println("TEMP INT", tempInterface)
 
