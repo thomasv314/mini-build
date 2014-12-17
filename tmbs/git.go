@@ -4,7 +4,20 @@ import (
 	"fmt"
 	git "github.com/libgit2/git2go"
 	"net/url"
+	"time"
 )
+
+type GitPushNotification struct {
+	PushType string
+	Commits  []GitCommit
+}
+
+type GitCommit struct {
+	Id        string
+	Author    string
+	Message   string
+	Timestamp time.Time
+}
 
 func CloneRepository(gitURL *url.URL, path string, bare bool) (*git.Repository, error) {
 	fmt.Println("Cloning")

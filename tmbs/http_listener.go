@@ -33,7 +33,7 @@ func handler(res http.ResponseWriter, req *http.Request) {
 	case "push":
 		{
 			logRequest(200, params)
-			RenderPushNotification(res, req)
+			RenderPushNotification(params[1], res, req)
 		}
 	case "":
 		{
