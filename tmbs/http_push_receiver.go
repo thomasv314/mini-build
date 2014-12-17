@@ -9,7 +9,11 @@ import (
 )
 
 func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
+
+	// Set the headers for CORS
 	res = setHeader(res)
+
+	fmt.Println("recieved push notificatino from", req.URL.Host)
 
 	err := req.ParseForm()
 
