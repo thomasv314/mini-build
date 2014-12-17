@@ -43,12 +43,10 @@ func SaveConfiguration(config *Configuration) {
 
 	cfgdir := GetTmbsDirectory() + config_file
 
-	fmt.Println("Save config called.", cfgdir)
-
 	jsonbytes, err := json.MarshalIndent(config, " ", "  ")
 
 	if err != nil {
-		fmt.Println("Umm, could not marshal config.")
+		fmt.Println("Hm, could not marshal config.")
 	} else {
 		err = ioutil.WriteFile(cfgdir, jsonbytes, 0644)
 		if err != nil {

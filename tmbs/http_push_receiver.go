@@ -13,66 +13,34 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 	// Set the headers for CORS
 	res = setHeader(res)
 
-	fmt.Println("Trying to figure out URl struct")
-	fmt.Println("req.Host", req.Host)
-	fmt.Println(req.Header)
-	err := req.ParseForm()
-
-	if err != nil {
-		fmt.Println("Error parsing form")
-	} else {
+	if req.Header.Get("User-Agent") == "Bitbucket.org" {
+		fmt.Println("Parsing push notification from bitbucket.")
+		// Bitbucket sends it's JSON url encoded in the form
+		err := req.ParseForm()
 		jsonStr, err := url.QueryUnescape(req.PostForm["payload"][0])
 		exitIfError(err, "Could not unescape")
+		jsonBytes := []byte(jsonStr)
 
-		fmt.Println("JSON STR\n", jsonStr)
-
-		jsonStrByte := []byte(jsonStr)
-
+		// Unmarshal payload into temporary interface
 		var tempInterface interface{}
-		err = json.Unmarshal(jsonStrByte, &tempInterface)
+		err = json.Unmarshal(jsonBytes, &tempInterface)
+		alertIfError(err, "Can't unmarshal")
 
+		// Marshal, indent, and write temp interface to a file
 		jsonbytes, err := json.MarshalIndent(tempInterface, " ", " ")
-
 		ioutil.WriteFile("bitbucket.json", jsonbytes, 0644)
+
+	} else {
+
+		fmt.Println("Received a request from unkown")
+		fmt.Println("User agent", req.Header.Get("User-Agent"))
+		fmt.Println("body", req.Body)
+		fmt.Println("form", req.PostForm)
+
 	}
-
-	fmt.Println(req.PostForm)
-
-	//	jsonbytes, err := json.MarshalIndent(js, " ", " ")
-
-	//	if err != nil {
-	//		fmt.Println("Received invalid json?")
-	//	} else {
-	//		err = ioutil.WriteFile("example.json", jsonbytes, 0644)
-	//		exitIfError(err, "Couldn't save file.")
-	//	}
-
-	//	io.WriteString(res, string(jsonbytes))
-
-	// Print what we need
-	//	fmt.Println(string(body))
-	//	io.WriteString(res, string(body))
-
-	//	req.ParseForm()
-	//	fmt.Println("Form:", req.Form)
-
 	//repo := "http://bitbucket.org/tommyvyo/arthouse.git"
 	//	commit := "aeb8430c"
 
 	//	link <- BuildCommand{"bitbucket", commit, repo}
-	/*
-		io.WriteString(
-			res,
-			`<doctype html>
-			<html>
-			<head>
-			<title>Hello World</title>
-			</head>
-			<body>
-			Hello World!
-			</body>
-			</html>`,
-		)
-	*/
 
 }

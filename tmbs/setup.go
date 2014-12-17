@@ -35,7 +35,6 @@ func Setup() {
 	SaveConfiguration(&emptyConfig)
 
 	fmt.Println("Created file:", appDir+"/config.json")
-	fmt.Println("TMBS setup correctly.")
 }
 
 // Check if a directory exists, if not create it.

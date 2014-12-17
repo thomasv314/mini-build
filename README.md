@@ -24,12 +24,19 @@ Run the `setup` command to create the directory structure in your user's home di
 
 ```
 #!bash
-➜ mini-build setup
-Setting up /home/thomas
+➜  mini-build git:(master) ✗ ./mini-build 
+Could not find an existing application configuration. Running setup.
 Created directory: /home/thomas/.tmbs
 Created directory: /home/thomas/.tmbs/repos
 Created directory: /home/thomas/.tmbs/tests
-Good to go!
+Created file: /home/thomas/.tmbs/config.json
+
+** Thomas' Mini Build Server **
+
+  Commands:
+    start   - Starts the build server
+    add     - Add a repository
+    help    - Display this message
 ```
 
 Add a github/bitbucket repository to the mini-build config:
@@ -40,9 +47,6 @@ Add a github/bitbucket repository to the mini-build config:
 Added https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git to the mini-build configuration.
 ```
 
-
-
-
 You're all set. Start mini-build and it'll listen for commit POST's from that project:
 
 ```
@@ -52,3 +56,9 @@ Thomas Mini Build Server - hit return to quit
  - loaded config.json
  - listening on 0.0.0.0 :59999
 ```
+
+When a push notification is recieved TMBS will build a docker image based off a Dockerfile in the repository.
+
+After the image is built the commited code is ran based off a command you specify, which then runs your test suite inside of a new container. 
+
+After the push notification is recieved you can use TMBS to watch the progress, output, and results of each commit.

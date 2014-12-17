@@ -5,6 +5,11 @@ import (
 	"os"
 )
 
+func alertIfError(err error, messages ...string) {
+	fmt.Println(err)
+	fmt.Println("Alert Error:", messages)
+}
+
 func exitWithMessage(messages ...string) {
 	fmt.Println(messages)
 	os.Exit(1)
