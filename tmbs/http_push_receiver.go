@@ -13,8 +13,8 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 	// Set the headers for CORS
 	res = setHeader(res)
 
-	fmt.Println("recieved push notificatino from", req.URL.Host)
-
+	fmt.Println("Trying to figure out URl struct")
+	fmt.Println("Scheme", req.URL.Scheme, "Opaq", req.URL.Opaque, "Usr", req.URL.User, "Host", req.URL.Host, "Path", req.URL.Path, "Raw", req.URL.RawQuery, "FRAG", req.URL.Fragment)
 	err := req.ParseForm()
 
 	if err != nil {
