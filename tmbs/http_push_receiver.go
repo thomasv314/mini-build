@@ -21,6 +21,21 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		var body []byte
 		body, err := ioutil.ReadAll(req.Body)
 
+		sample := body
+
+		fmt.Println("Printf with %x:")
+		fmt.Printf("%x\n", sample)
+
+		fmt.Println("Printf with % x:")
+		fmt.Printf("% x\n", sample)
+
+		fmt.Println("Printf with %q:")
+		fmt.Printf("%q\n", sample)
+
+		fmt.Println("Printf with %+q:")
+		fmt.Printf("%+q\n", sample)
+
+		// This line prints out the output above
 		fmt.Println(string(body))
 		exitIfError(err, "What the heck")
 	}
