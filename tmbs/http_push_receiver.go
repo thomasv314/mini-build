@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
@@ -13,35 +14,67 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 	// Set the headers for CORS
 	res = setHeader(res)
 
-	if req.Header.Get("User-Agent") == "Bitbucket.org" {
-		fmt.Println("Parsing push notification from bitbucket.")
-		// Bitbucket sends it's JSON url encoded in the form
-		err := req.ParseForm()
-		jsonStr, err := url.QueryUnescape(req.PostForm["payload"][0])
-		exitIfError(err, "Could not unescape")
-		jsonBytes := []byte(jsonStr)
+	var (
+		jsonInterface interface{}
+		userAgent     string = req.Header.Get("User-Agent")
+		source        string
+		err           error
+	)
 
-		// Unmarshal payload into temporary interface
-		var tempInterface interface{}
-		err = json.Unmarshal(jsonBytes, &tempInterface)
-		alertIfError(err, "Can't unmarshal")
+	if userAgent == "Bitbucket.org" {
 
-		// Marshal, indent, and write temp interface to a file
-		jsonbytes, err := json.MarshalIndent(tempInterface, " ", " ")
-		ioutil.WriteFile("bitbucket.json", jsonbytes, 0644)
+		source = "bitbucket"
+		jsonInterface, err = parseRequestFormJSON(req, true)
+
+	} else if strings.Contains(userAgent, "GitHub") {
+
+		source = "github"
+		jsonInterface, err = parseRequestFormJSON(req, false)
 
 	} else {
 
-		fmt.Println("Received a request from unkown")
+		fmt.Println("Received a request from unknown source")
 		fmt.Println("\tUser agent", req.Header.Get("User-Agent"))
 		req.ParseForm()
 		fmt.Println("\tbody", req.Body)
 		fmt.Println("\tform", req.PostForm)
 
 	}
+
+	if source != "" {
+		jsonbytes, err := json.MarshalIndent(jsonInterface, " ", " ")
+
+		if err != nil {
+
+			fmt.Println("Error indenting JSON")
+		}
+
+		ioutil.WriteFile("latest.json", jsonbytes, 0644)
+	}
+
+	if err != nil {
+		fmt.Println("Some error", err)
+	}
+
 	//repo := "http://bitbucket.org/tommyvyo/arthouse.git"
 	//	commit := "aeb8430c"
 
 	//	link <- BuildCommand{"bitbucket", commit, repo}
 
+}
+
+func parseRequestFormJSON(req *http.Request, needsQueryUnescape bool) (js interface{}, err error) {
+	err = req.ParseForm()
+
+	jsonstr := req.PostForm["payload"][0]
+	jsonstr, err = url.QueryUnescape(jsonstr)
+	exitIfError(err, "Could not unescape string")
+	jsonBytes := []byte(jsonstr)
+
+	var jsonInterface interface{}
+	err = json.Unmarshal(jsonBytes, &jsonInterface)
+
+	fmt.Println(jsonInterface)
+
+	return jsonInterface, err
 }
