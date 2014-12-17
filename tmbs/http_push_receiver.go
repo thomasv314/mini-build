@@ -58,8 +58,8 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 
 	//repo := "http://bitbucket.org/tommyvyo/arthouse.git"
 	//	commit := "aeb8430c"
-
 	//	link <- BuildCommand{"bitbucket", commit, repo}
+	// Format Test One
 
 }
 
