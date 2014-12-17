@@ -23,7 +23,6 @@ Add the mini-build binary to your PATH.
 Run the `setup` command to create the directory structure in your user's home directory:
 
 ```
-#!bash
 ➜  mini-build git:(master) ✗ ./mini-build 
 Could not find an existing application configuration. Running setup.
 Created directory: /home/thomas/.tmbs
@@ -42,7 +41,6 @@ Created file: /home/thomas/.tmbs/config.json
 Add a github/bitbucket repository to the mini-build config:
 
 ```
-#!bash
 ➜ mini-build add https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git
 Added https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git to the mini-build configuration.
 ```

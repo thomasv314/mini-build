@@ -33,9 +33,10 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 	} else {
 
 		fmt.Println("Received a request from unkown")
-		fmt.Println("User agent", req.Header.Get("User-Agent"))
-		fmt.Println("body", req.Body)
-		fmt.Println("form", req.PostForm)
+		fmt.Println("\tUser agent", req.Header.Get("User-Agent"))
+		req.ParseForm()
+		fmt.Println("\tbody", req.Body)
+		fmt.Println("\tform", req.PostForm)
 
 	}
 	//repo := "http://bitbucket.org/tommyvyo/arthouse.git"
