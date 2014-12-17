@@ -6,8 +6,10 @@ import (
 )
 
 func alertIfError(err error, messages ...string) {
-	fmt.Println(err)
-	fmt.Println("Alert Error:", messages)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Alert Error:", messages)
+	}
 }
 
 func exitWithMessage(messages ...string) {

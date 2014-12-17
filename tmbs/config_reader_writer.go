@@ -10,10 +10,17 @@ func LoadJSONFile(path string, inp interface{}) error {
 	file, err := os.Open(path)
 	defer file.Close()
 
+	if err != nil {
+		return err
+	}
+
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&inp)
-
-	return err
+	if err != nil {
+		return err
+	} else {
+		return nil
+	}
 }
 
 func WriteJSONFile(path string, js interface{}) error {
@@ -24,7 +31,8 @@ func WriteJSONFile(path string, js interface{}) error {
 		err = ioutil.WriteFile(path, jsonbytes, 0644)
 		if err != nil {
 			return err
+		} else {
+			return nil
 		}
-		return nil
 	}
 }

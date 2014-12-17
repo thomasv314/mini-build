@@ -1,6 +1,8 @@
 package tmbs
 
 import (
+	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -8,6 +10,16 @@ import (
 func RenderHomepage(res http.ResponseWriter, req *http.Request) {
 
 	res = setHeader(res)
-	io.WriteString(res, "<html><head><title>TMBS</title></head><body>Thomas' Mini Build Server</body></html>")
+
+	var config Configuration = Configuration{}
+
+	err := LoadJSONFile(GetTmbsDirectory()+"/config.json", &config)
+	alertIfError(err, "Could not load JSON.")
+
+	fmt.Println("CONFIG", config)
+
+	bytes, err := json.MarshalIndent(config, " ", " ")
+
+	io.WriteString(res, string(bytes))
 
 }
