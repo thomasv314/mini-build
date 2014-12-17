@@ -50,7 +50,7 @@ func main() {
 				{
 					//url := "http://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
 					url := "https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
-					tmbs.AddRepository("ahous", url)
+					tmbs.AddRepository("mini-build", url)
 				}
 			default:
 				{

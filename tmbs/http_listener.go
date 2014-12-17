@@ -1,14 +1,12 @@
 package tmbs
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
-// Starts an HTTP server that listens on a specified port and
-// launches new builds when post requests come in to /post/
+// Start a new go routine for the HTTP listener
 func StartHttpListener() {
 	go startListener()
 }
@@ -22,14 +20,40 @@ func startListener() {
 		config.ListenPort,
 	)
 
-	http.HandleFunc("/push", recievedPushNotification)
+	http.HandleFunc("/", handler)
 	err := http.ListenAndServe(config.ListenPort, nil)
 	exitIfError(err, "Could not start HTTP listener. Check to see it's not already running.")
 
 }
 
-func setHeader(res http.ResponseWriter) {
+// Slices up the parameters and decides where to route the request
+func handler(res http.ResponseWriter, req *http.Request) {
+	params := strings.Split(req.URL.Path[1:], "/")
+	switch params[0] {
+	case "push":
+		{
+			logRequest(200, params)
+			RenderPushNotification(res, req)
+		}
+	case "":
+		{
+			logRequest(200, params)
+			RenderHomepage(res, req)
+		}
+	default:
+		{
+			logRequest(404, params)
+		}
+	}
+}
 
+// Writes a simple log to std
+func logRequest(status int, str []string) {
+	fmt.Println("   [", status, "]   ", strings.Join(str, "/"))
+}
+
+// Sets the headers for CORS
+func setHeader(res http.ResponseWriter) http.ResponseWriter {
 	res.Header().Set(
 		"Content-Type",
 		"text/html",
@@ -40,47 +64,5 @@ func setHeader(res http.ResponseWriter) {
 		"*",
 	)
 
-}
-
-func recievedPushNotification(res http.ResponseWriter, req *http.Request) {
-
-	setHeader(res)
-
-	var js interface{}
-
-	decoder := json.NewDecoder(req.Body)
-	err := decoder.Decode(js)
-
-	if err != nil {
-		fmt.Println("ERROR", err)
-	} else {
-		jsbytes, err := json.MarshalIndent(js, " ", "  ")
-		exitIfError(err, "Could not indent received request.")
-
-		err = ioutil.WriteFile(GetTmbsDirectory()+"/myreq.json", jsbytes, 0644)
-		exitIfError(err, "Could not write the requ.")
-		fmt.Println("Recieved and wrote request")
-	}
-
-	//	req.ParseForm()
-	//	fmt.Println("Form:", req.Form)
-
-	//repo := "http://bitbucket.org/tommyvyo/arthouse.git"
-	//	commit := "aeb8430c"
-
-	//	link <- BuildCommand{"bitbucket", commit, repo}
-	/*
-		io.WriteString(
-			res,
-			`<doctype html>
-			<html>
-			<head>
-			<title>Hello World</title>
-			</head>
-			<body>
-			Hello World!
-			</body>
-			</html>`,
-		)
-	*/
+	return res
 }
