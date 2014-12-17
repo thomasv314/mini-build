@@ -24,15 +24,11 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		jsonStrByte := []byte(jsonStr)
 
 		var tempInterface interface{}
-		fmt.Println(jsonStrByte)
 		err = json.Unmarshal(jsonStrByte, tempInterface)
 
-		if err != nil {
-			fmt.Println("Could not unmarshal..", err)
-		} else {
-			fmt.Println("MARSHALED")
-			fmt.Println(tempInterface)
-		}
+		fmt.Println("Could not unmarshal..", err)
+		fmt.Println("MARSHALED")
+		fmt.Println(tempInterface)
 
 		jsonbytes, err := json.MarshalIndent(tempInterface, " ", " ")
 		//	exitIfError(err, " Dang wtf Could not indent")
