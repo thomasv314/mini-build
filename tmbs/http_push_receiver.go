@@ -24,9 +24,8 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		jsonStrByte := []byte(jsonStr)
 
 		var tempInterface interface{}
-		err = json.Unmarshal(jsonStrByte, tempInterface)
+		err = json.Unmarshal(jsonStrByte, &tempInterface)
 
-		fmt.Println("Could not unmarshal..", err)
 		fmt.Println("MARSHALED")
 		fmt.Println(tempInterface)
 
