@@ -59,4 +59,4 @@ When a push notification is recieved TMBS will build a docker image based off a 
 
 After the image is built the commited code is ran based off a command you specify, which then runs your test suite inside of a new container. 
 
-After the push notification is recieved you can use TMBS to watch the progress, output, and results of each commit.
+After the push notification is recieved you can use TMBS to watch the progress, output, and results of each commit. 
