@@ -31,9 +31,6 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		var tempInterface interface{}
 		err = json.Unmarshal(jsonStrByte, &tempInterface)
 
-		fmt.Println("MARSHALED")
-		fmt.Println(tempInterface)
-
 		jsonbytes, err := json.MarshalIndent(tempInterface, " ", " ")
 
 		ioutil.WriteFile("bitbucket.json", jsonbytes, 0644)
