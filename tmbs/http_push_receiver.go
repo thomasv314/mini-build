@@ -1,8 +1,11 @@
 package tmbs
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
@@ -13,9 +16,16 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Error parsing form")
 	} else {
-		if req.PostForm["payload"] != nil {
-			fmt.Println(req.PostForm["payload"])
-		}
+		jsonStr, err := url.QueryUnescape(req.PostForm["payload"][0])
+		exitIfError(err, "Could not unescape")
+
+		var jsonInt interface{}
+
+		json.Unmarshal([]byte(jsonStr), jsonInt)
+
+		jsonbytes, err := json.MarshalIndent(jsonInt, " ", " ")
+		exitIfError(err, "Could not indent")
+		ioutil.WriteFile("example.json", jsonbytes, 0644)
 	}
 
 	fmt.Println(req.PostForm)
