@@ -9,8 +9,13 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 	res = setHeader(res)
 
 	err := req.ParseForm()
+
 	if err != nil {
 		fmt.Println("Error parsing form")
+	} else {
+		if req.PostForm["payload"] != nil {
+			fmt.Println(req.PostForm["payload"])
+		}
 	}
 
 	fmt.Println(req.PostForm)
