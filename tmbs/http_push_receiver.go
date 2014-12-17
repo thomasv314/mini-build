@@ -34,7 +34,6 @@ func RenderPushNotification(res http.ResponseWriter, req *http.Request) {
 		fmt.Println(tempInterface)
 
 		jsonbytes, err := json.MarshalIndent(tempInterface, " ", " ")
-		//	exitIfError(err, " Dang wtf Could not indent")
 
 		ioutil.WriteFile("bitbucket.json", jsonbytes, 0644)
 	}
