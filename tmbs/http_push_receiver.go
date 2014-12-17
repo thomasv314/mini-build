@@ -16,26 +16,64 @@ func RenderPushNotification(repoName string, res http.ResponseWriter, req *http.
 	res = setHeader(res)
 
 	var (
-		jsonI     map[string]interface{}
-		userAgent string = req.Header.Get("User-Agent")
+		jsonI            map[string]interface{}
+		userAgent        string = req.Header.Get("User-Agent")
+		source           string = "none"
+		pushNotification GitPushNotification
+		err              error
 	)
 
-	var pushNotification GitPushNotification
-
 	if strings.Contains(userAgent, "GitHub") {
-
+		source = "github"
 		jsonI, _ = parseRequestFormJSON(req)
-		pushNotification, err := parseGitHubInterface(jsonI)
-		alertIfError(err, "Could not parse github interface.")
-
+		pushNotification, err = parseGitHubInterface(jsonI)
 	} else {
-
+		source = "bitbucket"
 		jsonI, _ = parseRequestFormJSON(req)
-		pushNotification, err := parseBitbucketInterface(jsonI)
-		alertIfError(err, "Could not parse bitbucket interface.")
-
+		pushNotification, err = parseBitbucketInterface(jsonI)
 	}
 
+	if source != "" {
+		if err != nil {
+			fmt.Println(" - Received a push notification from", source, "but we could not decode.")
+		} else {
+
+			// We've got a push notification to add
+			config, err := LoadConfiguration()
+
+			if err != nil {
+				fmt.Println(" - Could not add this push notification to the configuration.")
+			} else {
+				// Find the Repo we're pushing to in the configuration
+
+				var found bool
+				var foundRepo WatchedRepository
+				for i := range config.Repositories {
+					repo := config.Repositories[i]
+					if repo.Name == repoName {
+						found = true
+						foundRepo = repo
+						break
+					}
+				}
+
+				if found {
+					// Update the configuration for the new push notification
+					WriteJSONFile("/home/thomas/code/test.json", pushNotification)
+					fmt.Println(
+						" - Received a push notification from",
+						source, "to", repoName, "with", len(pushNotification.Commits), "commits",
+					)
+					fmt.Println("Found the repository!")
+					fmt.Println(foundRepo)
+				} else {
+					fmt.Println("Could not find repo.")
+				}
+			}
+		}
+	} else {
+		fmt.Println(" - Received a push notification from an unknown source for", repoName)
+	}
 }
 
 // Returns a Go interface mapped to the incoming JSON payload
@@ -53,7 +91,37 @@ func parseRequestFormJSON(req *http.Request) (js map[string]interface{}, err err
 	return jsonInterface, err
 }
 
-// Parses a Go interface based off the payload and creates a push notification
+// Parses a Go interface based off the payload from bitbucket
+func parseBitbucketInterface(js map[string]interface{}) (GitPushNotification, error) {
+	notification := GitPushNotification{PushType: "Bitbucket"}
+
+	var (
+		author     string
+		message    string
+		id         string
+		commitTime time.Time
+		err        error
+	)
+
+	bitbucketTimeParser := "2006-01-02 15:04:05"
+
+	comsArr := js["commits"].([]interface{})
+
+	for i := range comsArr {
+		c := comsArr[i].(map[string]interface{})
+		author = c["author"].(string)
+		message = c["message"].(string)
+		id = c["raw_node"].(string)
+		commitTime, err = time.Parse(bitbucketTimeParser, c["timestamp"].(string))
+
+		commit := GitCommit{id, author, message, commitTime}
+		notification.Commits = append(notification.Commits, commit)
+	}
+
+	return notification, err
+}
+
+// Parses a Go interface based off the payload from github
 func parseGitHubInterface(js map[string]interface{}) (GitPushNotification, error) {
 
 	notification := GitPushNotification{PushType: "GitHub"}
@@ -74,13 +142,10 @@ func parseGitHubInterface(js map[string]interface{}) (GitPushNotification, error
 		author = c["author"].(map[string]interface{})["username"].(string)
 		message = c["message"].(string)
 		id = c["id"].(string)
-
 		commitTime, err = time.Parse(time.RFC3339, c["timestamp"].(string))
 
 		commit := GitCommit{id, author, message, commitTime}
-
 		notification.Commits = append(notification.Commits, commit)
-		fmt.Println(commit)
 	}
 
 	return notification, err

@@ -32,12 +32,10 @@ func handler(res http.ResponseWriter, req *http.Request) {
 	switch params[0] {
 	case "push":
 		{
-			logRequest(200, params)
 			RenderPushNotification(params[1], res, req)
 		}
 	case "":
 		{
-			logRequest(200, params)
 			RenderHomepage(res, req)
 		}
 	default:

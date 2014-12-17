@@ -16,6 +16,7 @@ type Configuration struct {
 type WatchedRepository struct {
 	Directory string
 	Name      string
+	Pushes    []GitPushNotification
 }
 
 var (

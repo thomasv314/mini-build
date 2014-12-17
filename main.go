@@ -46,11 +46,24 @@ func main() {
 						tmbs.AddRepository(args[1], args[2])
 					}
 				}
-			case "test":
+			case "test-add-repo":
 				{
 					//url := "http://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
 					url := "https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
 					tmbs.AddRepository("mini-build", url)
+				}
+			case "test":
+				{
+
+					var config tmbs.Configuration = tmbs.Configuration{}
+
+					err := tmbs.LoadJSONFile(tmbs.GetTmbsDirectory()+"/config.json", &config)
+
+					if err != nil {
+						fmt.Println("error", err)
+					} else {
+						fmt.Println(config)
+					}
 				}
 			default:
 				{
