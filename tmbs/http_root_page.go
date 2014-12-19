@@ -2,7 +2,6 @@ package tmbs
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -13,13 +12,20 @@ func RenderHomepage(res http.ResponseWriter, req *http.Request) {
 
 	var config Configuration = Configuration{}
 
+	var response string
+
 	err := LoadJSONFile(GetTmbsDirectory()+"/config.json", &config)
-	alertIfError(err, "Could not load JSON.")
+	if err != nil {
+		response = "Could not load config.json"
+	} else {
+		bytes, err := json.MarshalIndent(config, " ", " ")
+		if err != nil {
+			response = "Could not parse config.json"
+		} else {
+			response = string(bytes)
+		}
+	}
 
-	fmt.Println("CONFIG", config)
-
-	bytes, err := json.MarshalIndent(config, " ", " ")
-
-	io.WriteString(res, string(bytes))
+	io.WriteString(res, response)
 
 }

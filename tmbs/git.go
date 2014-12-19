@@ -17,6 +17,7 @@ type GitCommit struct {
 	Author    string
 	Message   string
 	Timestamp time.Time
+	Status    string
 }
 
 func CloneRepository(gitURL *url.URL, path string, bare bool) (*git.Repository, error) {

@@ -37,7 +37,6 @@ func RenderPushNotification(repoName string, res http.ResponseWriter, req *http.
 		if err != nil {
 			fmt.Println(" - Received a push notification from", source, "but we could not decode.")
 		} else {
-
 			// We've got a push notification to add
 			config, err := LoadConfiguration()
 
@@ -45,29 +44,13 @@ func RenderPushNotification(repoName string, res http.ResponseWriter, req *http.
 				fmt.Println(" - Could not add this push notification to the configuration.")
 			} else {
 				// Find the Repo we're pushing to in the configuration
-
-				var found bool
-				var foundRepo WatchedRepository
 				for i := range config.Repositories {
-					repo := config.Repositories[i]
-					if repo.Name == repoName {
-						found = true
-						foundRepo = repo
+					if repoName == config.Repositories[i].Name {
+						config.Repositories[i].Pushes = append(config.Repositories[i].Pushes, pushNotification)
+						err = WriteJSONFile(GetTmbsDirectory()+"/config.json", &config)
+						alertIfError(err, "Can't write json file..")
 						break
 					}
-				}
-
-				if found {
-					// Update the configuration for the new push notification
-					WriteJSONFile("/home/thomas/code/test.json", pushNotification)
-					fmt.Println(
-						" - Received a push notification from",
-						source, "to", repoName, "with", len(pushNotification.Commits), "commits",
-					)
-					fmt.Println("Found the repository!")
-					fmt.Println(foundRepo)
-				} else {
-					fmt.Println("Could not find repo.")
 				}
 			}
 		}
