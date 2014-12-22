@@ -3,6 +3,8 @@
 ###
 
 require 'sass'
+activate :angular_templates
+
 # Change Compass configuration
 # compass_config do |config|
 #   config.output_style = :compact

@@ -1,7 +1,6 @@
-//= require angular
-//= require angular-route
-//= require app
-//= require controllers/repo
+//= require vendor/angular
+//= require vendor/angular-route
+//= require_tree ./app
 
 //
 //n= require_tree .

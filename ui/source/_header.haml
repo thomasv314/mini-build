@@ -1,0 +1,30 @@
+%nav.navbar.navbar-inverse.navbar-fixed-top{:role => "navigation"}
+  .container-fluid
+    .navbar-header
+      %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      %a.navbar-brand{:href => "#"} Mini Build
+    #navbar.navbar-collapse.collapse
+      /%ul.nav.navbar-nav.navbar-right
+      /%li
+      /%a{:href => "#"} Dashboard
+      %form.navbar-form.navbar-right
+        %input.form-control{:type => "text", "ng-model" => "tmbsURL"}/
+.container-fluid
+  .row
+    .col-sm-3.col-md-2.sidebar
+      %ul.nav.nav-sidebar
+        %li.active
+          %a{:href => "#"}
+            Overview
+            %span.sr-only (current)
+    .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
+/
+  Bootstrap core JavaScript
+  \==================================================
+/ Placed at the end of the document so the pages load faster
+/%script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"}
+/%script{ src: "javascripts/boostrap.js" }

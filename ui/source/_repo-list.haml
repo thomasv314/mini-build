@@ -1,0 +1,16 @@
+.row-fluid
+  .col-sm-12
+    .repository-list
+      .repository-row{ "ng-repeat" => "repo in Config.Repositories" }
+        %h4
+          %span{"ng-bind" => "repo.Name" } 
+          %small{ "ng-bind" => "repo.Directory" }
+          %small{ "ng-bind" => "repo.Commits.size" }
+        %table.table
+          %tr{ "ng-repeat" => "commit in repo.Commits" }
+            %td
+              %a{ "ng-click" => "viewCommit(commit)", "ng-bind" => "commit.Id.substring(0, 10)" } 
+            %td{ "ng-bind" => "commit.Status" }
+            %td{ "ng-bind" => "commit.Message" }
+            %td{ "ng-bind" => "commit.Author" } 
+            %td{ "ng-bind" => "commit.Timestamp" }
