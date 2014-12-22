@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
 // Simple JSON configuration struct
@@ -16,7 +17,17 @@ type Configuration struct {
 type WatchedRepository struct {
 	Directory string
 	Name      string
-	Pushes    []GitPushNotification
+	Commits   []GitCommit
+}
+
+type GitCommit struct {
+	Id             string
+	RepositoryName string
+	Author         string
+	Message        string
+	Timestamp      time.Time
+	Status         string
+	Source         string
 }
 
 var (

@@ -16,21 +16,21 @@ func RenderPushNotification(repoName string, res http.ResponseWriter, req *http.
 	res = setHeader(res)
 
 	var (
-		jsonI            map[string]interface{}
-		userAgent        string = req.Header.Get("User-Agent")
-		source           string = "none"
-		pushNotification GitPushNotification
-		err              error
+		jsonI     map[string]interface{}
+		userAgent string = req.Header.Get("User-Agent")
+		source    string = "none"
+		commits   []GitCommit
+		err       error
 	)
 
 	if strings.Contains(userAgent, "GitHub") {
 		source = "github"
 		jsonI, _ = parseRequestFormJSON(req)
-		pushNotification, err = parseGitHubInterface(jsonI)
+		commits, err = parseGitHubInterface(jsonI)
 	} else {
 		source = "bitbucket"
 		jsonI, _ = parseRequestFormJSON(req)
-		pushNotification, err = parseBitbucketInterface(jsonI)
+		commits, err = parseBitbucketInterface(jsonI)
 	}
 
 	if source != "" {
@@ -46,7 +46,7 @@ func RenderPushNotification(repoName string, res http.ResponseWriter, req *http.
 				// Find the Repo we're pushing to in the configuration
 				for i := range config.Repositories {
 					if repoName == config.Repositories[i].Name {
-						config.Repositories[i].Pushes = append(config.Repositories[i].Pushes, pushNotification)
+						config.Repositories[i].Commits = append(config.Repositories[i].Commits, commits...)
 						err = WriteJSONFile(GetTmbsDirectory()+"/config.json", &config)
 						alertIfError(err, "Can't write json file..")
 						break
@@ -75,9 +75,7 @@ func parseRequestFormJSON(req *http.Request) (js map[string]interface{}, err err
 }
 
 // Parses a Go interface based off the payload from bitbucket
-func parseBitbucketInterface(js map[string]interface{}) (GitPushNotification, error) {
-	notification := GitPushNotification{PushType: "Bitbucket"}
-
+func parseBitbucketInterface(js map[string]interface{}) ([]GitCommit, error) {
 	var (
 		author     string
 		message    string
@@ -90,24 +88,21 @@ func parseBitbucketInterface(js map[string]interface{}) (GitPushNotification, er
 
 	comsArr := js["commits"].([]interface{})
 
+	commits := make([]GitCommit, len(comsArr))
 	for i := range comsArr {
 		c := comsArr[i].(map[string]interface{})
 		author = c["author"].(string)
 		message = c["message"].(string)
 		id = c["raw_node"].(string)
 		commitTime, err = time.Parse(bitbucketTimeParser, c["timestamp"].(string))
-
-		commit := GitCommit{id, author, message, commitTime}
-		notification.Commits = append(notification.Commits, commit)
+		commits[i] = GitCommit{id, author, message, commitTime, "received", "bitbucket"}
 	}
 
-	return notification, err
+	return commits, err
 }
 
 // Parses a Go interface based off the payload from github
-func parseGitHubInterface(js map[string]interface{}) (GitPushNotification, error) {
-
-	notification := GitPushNotification{PushType: "GitHub"}
+func parseGitHubInterface(js map[string]interface{}) ([]GitCommit, error) {
 
 	var (
 		author     string
@@ -118,6 +113,7 @@ func parseGitHubInterface(js map[string]interface{}) (GitPushNotification, error
 	)
 
 	comsArr := js["commits"].([]interface{})
+	commits := make([]GitCommit, len(comsArr))
 
 	for i := range comsArr {
 		c := comsArr[i].(map[string]interface{})
@@ -127,9 +123,8 @@ func parseGitHubInterface(js map[string]interface{}) (GitPushNotification, error
 		id = c["id"].(string)
 		commitTime, err = time.Parse(time.RFC3339, c["timestamp"].(string))
 
-		commit := GitCommit{id, author, message, commitTime}
-		notification.Commits = append(notification.Commits, commit)
+		commits[i] = GitCommit{id, author, message, commitTime, "received", "github"}
 	}
 
-	return notification, err
+	return commits, err
 }

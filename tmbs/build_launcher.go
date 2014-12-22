@@ -2,6 +2,7 @@ package tmbs
 
 import (
 	"fmt"
+	"time"
 	//	"github.com/libgit2/git2go"
 )
 
@@ -12,28 +13,27 @@ type BuildCommand struct {
 	Repository string
 }
 
-var link chan BuildCommand
+var link chan GitCommit
 
 func FakePush() {
 	fmt.Println("Sending fake push")
-	repo := "http://bitbucket.org/tommyvyo/arthouse.git"
-	commit := "aeb8430c"
-	link <- BuildCommand{"bitbucket", commit, repo}
+	commit := GitCommit{"23c93b66e188ded46a5d1d0b37add82d21cd05b9", "tommyvyo", "Commit Format Test Two'\n", time.Now(), "received", "bitbucket"}
+	fmt.Println(commit)
+	link <- commit
 }
 
 func StartBuildLauncher() {
-	link = make(chan BuildCommand)
+	link = make(chan GitCommit)
 	go start()
 }
 
 func start() {
 	for {
-		build := <-link
-
-		LaunchNewBuild(build)
+		commit := <-link
+		BuildNewCommit(commit)
 	}
 }
 
-func LaunchNewBuild(build BuildCommand) {
+func BuildNewCommit(commit GitCommit) {
 
 }
