@@ -17,7 +17,7 @@ var link chan GitCommit
 
 func FakePush() {
 	fmt.Println("Sending fake push")
-	commit := GitCommit{"23c93b66e188ded46a5d1d0b37add82d21cd05b9", "tommyvyo", "Commit Format Test Two'\n", time.Now(), "received", "bitbucket"}
+	commit := GitCommit{"23c93b66e188ded46a5d1d0b37add82d21cd05b9", "mini-build", "tommyvyo", "Commit Format Test Two'\n", time.Now(), "received", "bitbucket"}
 	fmt.Println(commit)
 	link <- commit
 }
@@ -35,5 +35,5 @@ func start() {
 }
 
 func BuildNewCommit(commit GitCommit) {
-
+	fmt.Println("Recieved commit ", commit.Id)
 }

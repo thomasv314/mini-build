@@ -26,11 +26,11 @@ func RenderPushNotification(repoName string, res http.ResponseWriter, req *http.
 	if strings.Contains(userAgent, "GitHub") {
 		source = "github"
 		jsonI, _ = parseRequestFormJSON(req)
-		commits, err = parseGitHubInterface(jsonI)
+		commits, err = parseGitHubInterface(repoName, jsonI)
 	} else {
 		source = "bitbucket"
 		jsonI, _ = parseRequestFormJSON(req)
-		commits, err = parseBitbucketInterface(jsonI)
+		commits, err = parseBitbucketInterface(repoName, jsonI)
 	}
 
 	if source != "" {
@@ -75,7 +75,7 @@ func parseRequestFormJSON(req *http.Request) (js map[string]interface{}, err err
 }
 
 // Parses a Go interface based off the payload from bitbucket
-func parseBitbucketInterface(js map[string]interface{}) ([]GitCommit, error) {
+func parseBitbucketInterface(repoName string, js map[string]interface{}) ([]GitCommit, error) {
 	var (
 		author     string
 		message    string
@@ -95,14 +95,14 @@ func parseBitbucketInterface(js map[string]interface{}) ([]GitCommit, error) {
 		message = c["message"].(string)
 		id = c["raw_node"].(string)
 		commitTime, err = time.Parse(bitbucketTimeParser, c["timestamp"].(string))
-		commits[i] = GitCommit{id, author, message, commitTime, "received", "bitbucket"}
+		commits[i] = GitCommit{id, repoName, author, message, commitTime, "received", "bitbucket"}
 	}
 
 	return commits, err
 }
 
 // Parses a Go interface based off the payload from github
-func parseGitHubInterface(js map[string]interface{}) ([]GitCommit, error) {
+func parseGitHubInterface(repoName string, js map[string]interface{}) ([]GitCommit, error) {
 
 	var (
 		author     string
@@ -123,7 +123,7 @@ func parseGitHubInterface(js map[string]interface{}) ([]GitCommit, error) {
 		id = c["id"].(string)
 		commitTime, err = time.Parse(time.RFC3339, c["timestamp"].(string))
 
-		commits[i] = GitCommit{id, author, message, commitTime, "received", "github"}
+		commits[i] = GitCommit{id, repoName, author, message, commitTime, "received", "github"}
 	}
 
 	return commits, err
