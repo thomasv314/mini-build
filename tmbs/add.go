@@ -1,6 +1,7 @@
 package tmbs
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 	"os/user"
@@ -27,13 +28,16 @@ func AddRepository(name string, gitUrl string) {
 
 		// Clone a bare repository to /repos/
 		repository, err := CloneRepository(url, path, true)
+		exitIfError(err, "Could not clone repository.")
 
-		if err != nil {
-			// The repository already exists because we tried to clone b4 without auth
-			// so let's delete it and only exit if we still have problems (prob perms?)
-			err = os.RemoveAll(path)
-			exitIfError(err, "Could not clear repository path. Check permissions on", GetTmbsDirectory())
-		}
+		// The repository already exists because we tried to clone b4 without auth
+		// so let's delete it and only exit if we still have problems (prob perms?)
+		//	err = os.RemoveAll(path)
+		exitIfError(err, "Could not clear repository path. Check permissions on", GetTmbsDirectory())
+
+		fmt.Println("Cloned. Fetching repository now.")
+
+		fmt.Println(repository)
 
 		// Fetch HEAD
 		err = FetchRepository(repository)
@@ -56,8 +60,9 @@ func AddRepository(name string, gitUrl string) {
 func parseURL(str string) *url.URL {
 	u, err := url.Parse(str)
 	exitIfError(err, "URL Invalid")
+	fmt.Println("Parsed:", str)
 	if u.Scheme == "" {
-		u = parseURL("ssh://" + str)
+		u = parseURL("git://" + str)
 		parts := strings.Split(u.Host, ":")
 		u.Host = parts[0]
 		u.Path = path.Join(parts[1], u.Path)

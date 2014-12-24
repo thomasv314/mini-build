@@ -2,8 +2,8 @@ package tmbs
 
 import (
 	"fmt"
+	//	git "github.com/libgit2/git2go"
 	"time"
-	//	"github.com/libgit2/git2go"
 )
 
 // latestCommand := BuildCommand{ "bitbucket", "a380d3a", "http://bitbucket.org/thomas/myrepo.git"
@@ -24,16 +24,30 @@ func FakePush() {
 
 func StartBuildLauncher() {
 	link = make(chan GitCommit)
+	// listen for new commits on a new goroutine
 	go start()
 }
 
 func start() {
 	for {
 		commit := <-link
-		BuildNewCommit(commit)
+		go BuildNewCommit(commit)
 	}
 }
 
 func BuildNewCommit(commit GitCommit) {
-	fmt.Println("Recieved commit ", commit.Id)
+	fmt.Println("Recieved commit ", commit.Id, "on a new go routine")
+
+	path := GetTmbsDirectory() + "/repos/" + commit.RepositoryName
+
+	newRepo, err := CloneRepository(parseURL("file://"+path), GetTmbsDirectory()+"/repos/watwat", false)
+
+	//	repo, err := git.OpenRepository(path)
+
+	if err != nil {
+		fmt.Println("Error", err)
+	} else {
+
+		fmt.Println("Repository!", newRepo)
+	}
 }

@@ -11,7 +11,7 @@ func cloneOptionsForURL(u *url.URL, bare bool) *git.CloneOptions {
 	remoteCallbacks = git.RemoteCallbacks{
 		SidebandProgressCallback: sidebandProgressCallback,
 		TransferProgressCallback: transferProgressCallback,
-		CredentialsCallback:      buildCredentialsCallback(u),
+		CredentialsCallback:      credentialsCallback,
 		CertificateCheckCallback: buildCertificateCheckCallback(u),
 	}
 

@@ -6,6 +6,40 @@ import (
 	"net/url"
 )
 
+/*
+func credentialsCallback(url, usernameFromURL string, allowedTypes git.CredType) (git.ErrorCode, *git.Cred) {
+	i, cred := git.NewCredDefault()
+
+	fmt.Println("WTF", i, cred)
+	if allowedTypes&git.CredTypeUserpassPlaintext != 0 {
+		i, cred = git.NewCredUserpassPlaintext(getUserPass())
+		return git.ErrorCode(i), &cred
+	}
+	//	if allowedTypes&git.CredTypeSshKey != 0 {
+	//		i, cred = git.NewCredSshKeyFromAgent(u.User.Username())
+	//		fmt.Println("Can we use sshkey")
+	//		fmt.Println(cred.Type())
+	//		return git.ErrorCode(i), &cred
+	//	}
+	if allowedTypes&git.CredTypeSshCustom != 0 {
+		fmt.Println(cred.Type())
+
+		exitWithMessage("custom ssh not implemented")
+	}
+	if allowedTypes&git.CredTypeDefault == 0 {
+		fmt.Println(cred.Type())
+		exitWithMessage("invalid cred type")
+	}
+
+	fmt.Println("ERROR CODE", i, "CRED", cred)
+	return git.ErrorCode(i), &cred
+}
+*/
+func credentialsCallback(url string, username string, allowedTypes git.CredType) (git.ErrorCode, *git.Cred) {
+	ret, cred := git.NewCredSshKeyFromAgent(username)
+	return git.ErrorCode(ret), &cred
+}
+
 // TODO find out what this does?
 var i = &info{}
 
@@ -22,6 +56,8 @@ func sidebandProgressCallback(str string) git.ErrorCode {
 func transferProgressCallback(stats git.TransferProgress) git.ErrorCode {
 	i.stats = stats
 	i.update()
+	fmt.Println("stat", stats)
+	fmt.Println(i)
 	return git.ErrorCode(0)
 }
 
@@ -39,35 +75,6 @@ func getUserPass() (un string, pw string) {
 	}
 
 	return uname, upass
-}
-
-func buildCredentialsCallback(u *url.URL) git.CredentialsCallback {
-	return func(url, usernameFromURL string, allowedTypes git.CredType) (git.ErrorCode, *git.Cred) {
-		i, cred := git.NewCredDefault()
-
-		if allowedTypes&git.CredTypeUserpassPlaintext != 0 {
-			i, cred = git.NewCredUserpassPlaintext(getUserPass())
-			return git.ErrorCode(i), &cred
-		}
-		if allowedTypes&git.CredTypeSshKey != 0 {
-			i, cred = git.NewCredSshKeyFromAgent(u.User.Username())
-			fmt.Println("Can we use sshkey")
-			fmt.Println(cred.Type())
-			return git.ErrorCode(i), &cred
-		}
-		if allowedTypes&git.CredTypeSshCustom != 0 {
-			fmt.Println(cred.Type())
-
-			exitWithMessage("custom ssh not implemented")
-		}
-		if allowedTypes&git.CredTypeDefault == 0 {
-			fmt.Println(cred.Type())
-			exitWithMessage("invalid cred type")
-		}
-
-		fmt.Println("ERROR CODE", i, "CRED", cred)
-		return git.ErrorCode(i), &cred
-	}
 }
 
 func buildCertificateCheckCallback(u *url.URL) git.CertificateCheckCallback {

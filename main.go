@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/thomasv314/mini-build/tmbs"
+	"log/syslog"
 	"os"
 )
 
@@ -10,7 +11,13 @@ var AppConfig tmbs.Configuration
 
 func main() {
 
+	logger, err := syslog.NewLogger(syslog.LOG_DEBUG, 0)
+	logger.Print("Hello, log file!")
+
 	AppConfig, err := tmbs.LoadConfiguration()
+
+	// Start logging tmbs_log.go
+	tmbs.StartLogs()
 
 	if err != nil {
 		fmt.Println("Could not find an existing application configuration. Running setup.")
@@ -48,8 +55,9 @@ func main() {
 				}
 			case "test-add-repo":
 				{
+					url := "git@bitbucket.org:tommyvyo/mini-build.git"
 					//url := "http://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
-					url := "https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
+					//					url := "https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
 					tmbs.AddRepository("mini-build", url)
 				}
 			case "test":
