@@ -5,29 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"time"
 )
 
 // Simple JSON configuration struct
 type Configuration struct {
 	ListenPort   string ":59999" // json: "listenPort"		: ":55559"
 	Repositories []WatchedRepository
-}
-
-type WatchedRepository struct {
-	Directory string
-	Name      string
-	Commits   []GitCommit
-}
-
-type GitCommit struct {
-	Id             string
-	RepositoryName string
-	Author         string
-	Message        string
-	Timestamp      time.Time
-	Status         string
-	Source         string
 }
 
 var (
@@ -62,7 +45,7 @@ func SaveConfiguration(config *Configuration) {
 	} else {
 		err = ioutil.WriteFile(cfgdir, jsonbytes, 0644)
 		if err != nil {
-			fmt.Println("Error writing the fockinnngg file")
+			fmt.Println("Error writing the file")
 		}
 		exitIfError(err, "Could not save configuration file.")
 

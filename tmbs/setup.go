@@ -20,9 +20,10 @@ func Setup() {
 	appDir := GetTmbsDirectory()
 
 	// Create the directories
-	checkOrCreateDir(appDir, "application", 0777)
-	checkOrCreateDir(appDir+"/repos", "repository", 0777)
-	checkOrCreateDir(appDir+"/tests", "tests", 0777)
+	checkOrCreateDir(appDir, 0777)
+	checkOrCreateDir(appDir+"/repos", 0777)
+	checkOrCreateDir(appDir+"/tests", 0777)
+	checkOrCreateDir(appDir+"/logs", 0777)
 
 	// Create a blank configuration file
 	file, err := os.Create(appDir + "/config.json")
@@ -38,13 +39,13 @@ func Setup() {
 }
 
 // Check if a directory exists, if not create it.
-func checkOrCreateDir(path string, name string, perm os.FileMode) {
+func checkOrCreateDir(path string, perm os.FileMode) {
 	if checkExists(path) {
 		fmt.Println("Already exists:", path)
 	} else {
 		err := os.Mkdir(path, perm)
 		if err != nil {
-			fmt.Println("Error creating", name, "directory.")
+			fmt.Println("Error creating", path, "directory.")
 			panic(err)
 		}
 		fmt.Println("Created directory:", path)

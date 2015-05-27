@@ -16,15 +16,14 @@ func main() {
 
 	AppConfig, err := tmbs.LoadConfiguration()
 
-	// Start logging tmbs_log.go
-	tmbs.StartLogs()
-
 	if err != nil {
+
 		fmt.Println("Could not find an existing application configuration. Running setup.")
 
 		tmbs.Setup()
 
 		fmt.Println("")
+
 		displayHelp()
 
 	} else {
@@ -46,25 +45,25 @@ func main() {
 			case "add":
 				{
 					// add.go
-					// TODO add error catching if args > 1 || 0
-					if len(args) != 3 {
-						fmt.Println("Usage: mini-build add <repo-name> <repo-url>")
-					} else {
+					if len(args) == 3 {
 						tmbs.AddRepository(args[1], args[2])
+					} else {
+						fmt.Println("Usage: mini-build add <repo-name> <repo-url>")
 					}
 				}
-			case "test-add-repo":
+			case "test-add-bb":
 				{
-					url := "git@bitbucket.org:tommyvyo/mini-build.git"
-					//url := "http://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
-					//					url := "https://tommyvyo@bitbucket.org/tommyvyo/mini-build.git"
-					tmbs.AddRepository("mini-build", url)
+					url := "ssh://git@bitbucket.org/tommyvyo/mini-build.git"
+					tmbs.AddRepository("mini-build-bb", url)
+				}
+			case "test-add-gh":
+				{
+					url := "git@github.com:thomasv314/mini-build.git"
+					tmbs.AddRepository("mini-build-gh", url)
 				}
 			case "test":
 				{
-
 					var config tmbs.Configuration = tmbs.Configuration{}
-
 					err := tmbs.LoadJSONFile(tmbs.GetTmbsDirectory()+"/config.json", &config)
 
 					if err != nil {
@@ -83,8 +82,6 @@ func main() {
 }
 
 func displayHelp() {
-	fmt.Println("** Thomas' Mini Build Server **") // Sup?
-	fmt.Println("")
 	fmt.Println("  Commands:")
 	fmt.Println("\t start   - Starts the build server")
 	fmt.Println("\t add     - Add a repository")

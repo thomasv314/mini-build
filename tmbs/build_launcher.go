@@ -16,10 +16,17 @@ type BuildCommand struct {
 var link chan GitCommit
 
 func FakePush() {
-	fmt.Println("Sending fake push")
-	commit := GitCommit{"23c93b66e188ded46a5d1d0b37add82d21cd05b9", "mini-build", "tommyvyo", "Commit Format Test Two'\n", time.Now(), "received", "bitbucket"}
-	fmt.Println(commit)
-	link <- commit
+	commit := GitCommit{
+		"23c93b66e188ded46a5d1d0b37add82d21cd05b9",
+		"mini-build-bb",
+		"tommyvyo",
+		"Commit Format Test Two'\n",
+		time.Now(),
+		"received",
+		"bitbucket",
+	}
+
+	BuildNewCommit(commit)
 }
 
 func StartBuildLauncher() {
@@ -36,18 +43,28 @@ func start() {
 }
 
 func BuildNewCommit(commit GitCommit) {
-	fmt.Println("Recieved commit ", commit.Id, "on a new go routine")
 
-	path := GetTmbsDirectory() + "/repos/" + commit.RepositoryName
+	filePath := getLogPath(commit.RepositoryName, commit.Slug())
 
-	newRepo, err := CloneRepository(parseURL("file://"+path), GetTmbsDirectory()+"/repos/watwat", false)
+	// Start a new test writer to write a log file and send any updates to websockets
+	testWriter := TestWriter{filePath}
+	testWriter.Setup()
 
-	//	repo, err := git.OpenRepository(path)
+	testWriter.Write("Received commit " + commit.Id)
+
+	path := "file://" + GetTmbsDirectory() + "/repos/" + commit.RepositoryName
+	url := parseURL(path)
+
+	clonePath := GetTmbsDirectory() + "/tests/" + commit.Slug()
+
+	newRepo, err := CloneRepository(url, clonePath, false, testWriter)
+
+	fmt.Println(newRepo)
 
 	if err != nil {
 		fmt.Println("Error", err)
 	} else {
-
-		fmt.Println("Repository!", newRepo)
+		testWriter.Write("\nCloned the repository to " + path)
 	}
+
 }
